@@ -1,7 +1,7 @@
 :root {
   --personal-color-black: #000000;
-  --personal-color-white: #FFFFFF;
-  --personal-color-gray: #4D4D4D;
+  --personal-color-white: #ffffff;
+  --personal-color-gray: #4d4d4d;
 }
 
 * {
@@ -10,14 +10,13 @@
   box-sizing: border-box;
 }
 
-#app > :not(hr){
-  max-width: 450px;
+#app > :not(hr) {
+  max-width: 1000px;
   margin: auto;
 }
 
 .bg-image-circle {
-  width: 200px;
-  height: 200px;
+  padding-top: 100%;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -25,22 +24,8 @@
 }
 
 .bg-image-square {
+  padding-top: 100%;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
 }
-
-/* .container {
-  padding: 10px;
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 10px;
-}
-
-.redirect-box {
-  width: 300px;
-  height: 150px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-} */

@@ -1,8 +1,8 @@
 <script setup>
 import { ref } from 'vue';
+import MyButton from './button/MyButton.vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../store/auth/useAuthStore.js';
-import MyButton from './button/MyButton.vue';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -20,47 +20,46 @@ const redirectRegistration = () => {
 }
 
 const logout = async () => {
-  await authStore.logout();
-  router.replace("/");
-};
-
+  await authStore.logout();
+  router.replace('/');
+}
 </script>
 
 <template>
   <div class="header">
     <div class="title-box">
-      <h1 class="title" @click="redirectMain()">미어캣그램</h1>
+      <h1 class="title" @click="redirectMain()">Meerkatgram</h1>
     </div>
     <div class="btn-box">
       <MyButton
-      v-if="!authStore.isLoggedIn" 
-      @click="redirectLogin"
-      :content="'로그인'" 
-      :color="'gray'"
-      :size="'small'"
-      />
-      <MyButton 
-      v-if="!authStore.isLoggedIn"
-      :content="'가입'" 
-      :color="'whitegray'"
-      :size="'small'"
-      @click="redirectRegistration()"
+        v-if="!authStore.isLoggedIn"
+        @click="redirectLogin()"
+        :content="'Sign In'"
+        :color="'gray'"
+        :size="'small'"
       />
       <MyButton
-      v-if="authStore.isLoggedIn"
-      :content="'로그아웃'" 
-      :color="'black'"
-      :size="'small'"
-      @click="logout"
+        v-if="!authStore.isLoggedIn"
+        @click="redirectRegistration()"
+        :content="'Sign Up'"
+        :color="'white'"
+        :size="'small'"
+      />
+      <MyButton
+        v-if="authStore.isLoggedIn"
+        :content="'Logout'"
+        :color="'black'"
+        :size="'small'"
+        @click="logout()"
       />
     </div>
   </div>
-  <hr/>
+  <hr>
 </template>
 
 <style scoped>
 .header {
-  padding: 20px;
+  padding: 10px;
   display: flex;
   justify-content: space-between;
 }
@@ -72,7 +71,6 @@ const logout = async () => {
 
 .title {
   font-size: 20px;
-  cursor: pointer;
 }
 
 .btn-box {

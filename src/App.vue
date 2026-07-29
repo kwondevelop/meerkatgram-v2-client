@@ -2,6 +2,7 @@
 import Header from './components/Header.vue';
 import UserInfo from './components/UserInfo.vue';
 import PostIndex from './pages/posts/PostIndex.vue';
+
 </script>
 
 <template>

@@ -1,10 +1,9 @@
-import { defineStore } from 'pinia';
-import myAxios from '../../api/myAxios.js';
-import { useMyErrorStore } from '../error/useMyErrorStore.js';
-import { ref } from 'vue';
+import { defineStore } from "pinia";
+import { ref } from "vue";
+import myAxios from "../../api/myAxios";
+import { useMyErrorStore } from "../error/useMyErrorStore";
 
 export const useAuthStore = defineStore('authStore', () => {
-  
   // 1. State
   const isLoggedIn = ref(false);
   const accessToken = ref('');
@@ -18,27 +17,21 @@ export const useAuthStore = defineStore('authStore', () => {
     isLoggedIn.value = false;
     accessToken.value = '';
     userInfo.value = null;
+    isReissued.value = false;
   }
-  
+
   const login = async (loginForm) => {
     try {
       const url = '/api/auth/login';
-  
+
       const res = await myAxios.post(url, loginForm);
       const data = res.data.data;
-
       accessToken.value = data.accessToken;
       userInfo.value = data.user;
       isLoggedIn.value = true;
-
+      isReissued.value = false;
     } catch(error) {
-      if(error.response) {
-        if(error.response.data.code === 'E01') {
-          alert(error.response.data.data);
-          return;
-        }
-      }
-
+      console.error(error);
       throw error;
     }
   }
@@ -46,16 +39,18 @@ export const useAuthStore = defineStore('authStore', () => {
   const reissue = async () => {
     try {
       const url = '/api/auth/reissue-token';
-      
+
       const res = await myAxios.post(url);
       const data = res.data.data;
       accessToken.value = data.accessToken;
       userInfo.value = data.user;
       isLoggedIn.value = true;
-    } catch(error) {
+    } catch (error) {
       clearAuthStore();
+    } finally {
+      isReissued.value = true;
     }
-  };
+  }
 
   const logout = async () => {
     try {
@@ -75,29 +70,25 @@ export const useAuthStore = defineStore('authStore', () => {
 
       await myAxios.post(url, data);
       return;
-    } catch(error) {
+    } catch (error) {
       console.error(error);
       throw error;
     }
   }
 
   return {
-    // state
+    // State
     isLoggedIn,
     accessToken,
     userInfo,
     isReissued,
-    
-    // getters
-    
-    // actions
-    
+
+    // Getters
+
+    // Actions
     login,
     reissue,
     logout,
     registration,
-  };
-
+  }
 });
-
-export default useAuthStore;

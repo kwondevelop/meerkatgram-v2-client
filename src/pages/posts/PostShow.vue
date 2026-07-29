@@ -1,10 +1,9 @@
 <script setup>
-import { onBeforeMount } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import usePostShowStore from "../../store/post/usePostShowStore";
-import { useAuthStore } from "../../store/auth/useAuthStore.js";
-import { onBeforeUnmount } from "vue";
-import { useMyErrorStore } from "../../store/error/useMyErrorStore.js";
+import { onBeforeMount, onBeforeUnmount } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { usePostShowStore } from '../../store/post/usePostShowStore';
+import { useAuthStore } from '../../store/auth/useAuthStore';
+import { useMyErrorStore } from '../../store/error/useMyErrorStore';
 
 const route = useRoute();
 const router = useRouter();
@@ -15,62 +14,58 @@ const myErrorStore = useMyErrorStore();
 onBeforeMount(async () => {
   try {
     await postShowStore.getPost(route.params.id);
-  } catch (error) {
+  } catch(error) {
     myErrorStore.setErrorInfo(error);
-    router.replace("/error");
+    router.replace('/error');
   }
 });
 onBeforeUnmount(postShowStore.clearPostShow);
 </script>
 
 <template>
-  <hr/>
-  <template v-if="postShowStore.post">
-    <div class="container">
-      <div class ="image" :style="{ backgroundImage: `url(${postShowStore.post.postImageUrl})` }"></div>
+<div class="container" v-if="postShowStore.post">
+  <div class="image" :style="{backgroundImage: `url(${postShowStore.post.image})`}"></div>
+  <div class="option-box">
+    <div class="delete-box">
+      <div
+        class="delete-icon"
+        v-if="postShowStore.post.userId === authStore.userInfo.id"
+      ></div>
     </div>
-    <div class="option-box">
-      <div class="delete-box">
-        <div 
-          class="delete-icon"
-          v-show="postShowStore.post.userId === authStore.userInfo?.id"
-        ></div>
-      </div>
-      <div class="like-box">
-        <span>1234</span>
-        <div class="like-icon"></div>
-      </div>
+    <div class="like-box">
+      <span>1919</span>
+      <div class="like-icon"></div>
     </div>
-    <p class="content">{{ postShowStore.post.postContent }}</p>
-  </template>
+  </div>
+  <p class="content">{{ postShowStore.post.content }}</p>
+</div>
 </template>
+
 
 <style scoped>
 .container {
   padding: 15px;
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 15px;
 }
 
 .image {
-  width: 350px;
-  height: 350px;
+  padding-top: 100%;
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
 }
 
 .option-box {
-  padding: 0 50px;
+  padding: 0 15px;
   display: flex;
   justify-content: space-between;
 }
 
 .like-box {
   display: flex;
-  gap: 15px;
+  gap: 10px;
 }
 
 .delete-icon {
@@ -83,8 +78,8 @@ onBeforeUnmount(postShowStore.clearPostShow);
 }
 
 .like-icon {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   background-image: url('/icons/heart-fill.png');
   background-repeat: no-repeat;
   background-position: center;
@@ -92,7 +87,6 @@ onBeforeUnmount(postShowStore.clearPostShow);
 }
 
 .content {
-  padding: 15px 50px;
   white-space: pre-wrap;
 }
 </style>

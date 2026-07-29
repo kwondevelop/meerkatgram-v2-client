@@ -1,136 +1,100 @@
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import useFileStore from '../../store/file/useFileStore.js';
-import { useMyErrorStore } from '../../store/error/useMyErrorStore.js';
-import { useAuthStore } from '../../store/auth/useAuthStore.js';
+import { reactive, ref, watch } from 'vue';
 import MyButton from '../../components/button/MyButton.vue';
-import myAxios from '../../api/myAxios.js';
+import MyFileInput from '../../components/input/MyFileInput.vue';
+import MyTextarea from '../../components/input/MyTextarea.vue';
+import { useFileStore } from '../../store/file/useFileStore.js';
+import { useRouter } from 'vue-router';
+import { usePostCreateStore } from '../../store/post/usePostCreateStore.js';
+import { usePostShowStore } from '../../store/post/usePostShowStore.js';
 
 const router = useRouter();
 const fileStore = useFileStore();
-const authStore = useAuthStore();
-const myErrorStore = useMyErrorStore();
+const postCrestStore = usePostCreateStore();
+const postShowStore = usePostShowStore();
 
 const preview = ref(null);
-const postContent = ref('');
-const postImageUrl = ref('');
-
-const handleChangeProfile = async (event) => {
-  const file = event.target.files[0];
-
-  if(file) {
-    if(preview.value) {
-      URL.revokeObjectURL(preview.value); 
-    }
-
-    try {
-      const fileUri = await fileStore.uploadProfile(file); 
-
-      if(fileUri) {
-        postImageUrl.value = fileUri; 
-        
-        preview.value = URL.createObjectURL(file);
-      } else {
-        alert('파일 업로드 실패\n다시 시도해주세요.');
-      }
-    } catch(error) {
-      console.error(error);
-      alert('파일 업로드 중 오류가 발생했습니다.');
-    }
-  }
-}
+const selectedFile = ref(null);
+const storeData = reactive({
+  content: '',
+  image:'',
+});
 
 const handleSubmit = async () => {
-
-  if (!postContent.value.trim()) {
-    alert('내용을 입력해주세요.');
-    return;
-  }
-  if (!postImageUrl.value) {
-    alert('이미지를 선택해주세요.');
-    return;
-  }
-
   try {
-    await myAxios.post('/api/posts', {
-      postContent: postContent.value,
-      postImageUrl: postImageUrl.value
-    });
-    
-    alert('작성 완료');
-
-    if (authStore.userInfo) {
-      authStore.userInfo.countPosts += 1;
-    }
-
-    router.replace('/'); 
-  } catch(error) {
-    console.error("작성 실패", error);
-    myErrorStore.setErrorInfo(error);
-    router.replace('/error');
+    const result = await postCrestStore.store(storeData);
+    router.replace(`/posts/${result.id}`);
+  } catch (error) {
+    alert('게시글 생성 실패');
   }
 }
+
+// 파일 변경 감시자
+watch(selectedFile, async () => {
+  if(selectedFile.value) {
+    if(preview.value) {
+      // 기존에 생성된 메모리 URL이 있다면 해제 (메모리 누수 방지)
+      URL.revokeObjectURL(preview.value);
+    }
+
+    // API 서버에 파일 저장 요청
+    const fileUri = await fileStore.uploadPost(selectedFile.value);
+
+    if(fileUri) {
+      storeData.image = fileUri;
+
+      // 파일 객체를 브라우저에서 접근 가능한 임시URL로 변환
+      preview.value = URL.createObjectURL(selectedFile.value);
+    }
+  }
+});
 </script>
 
 <template>
-  <hr/>
-  <div class="upload-box">
-    <textarea 
-      class="textarea" 
-      v-model="postContent" 
-      placeholder="문구를 입력하세요..."
-    ></textarea>
+<form @submit.prevent="handleSubmit">
+  <MyTextarea
+    :placeholder="'내용 작성'"
+    :readonly="false"
+    :required="true"
+    v-model="storeData.content"
+  ></MyTextarea>
 
-    <div
-      class="preview"
-      v-if="preview"
-      :style="{ backgroundImage: `url(${preview})` }"
-    ></div>
+  <MyFileInput
+    :required="true"
+    v-model="selectedFile"
+  ></MyFileInput>
 
-    <input
-      id="file"
-      type="file"
-      accept="image/*"
-      @change="handleChangeProfile"
-    />
+  <div
+    class="preview"
+    v-if="preview"
+    :style="{backgroundImage: `url(${preview})`}"
+  ></div>
 
-    <MyButton
-      class="button"
-      :content="'작성'" 
-      :color="'gray'"
-      :size="'middle'"
-      @click="handleSubmit"
-    />
-  </div>
+  <MyButton
+    :btn-type="'submit'"
+    :content="'Write'"
+    :color="'gray'"
+    :size="'middle'"
+  ></MyButton>
+</form>
 </template>
 
+
 <style scoped>
-.upload-box {
+form {
+  padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 20px;
-  padding-bottom: 30px;
-}
-
-.textarea {
-  width: 300px;
-  height: 120px;
-  padding: 15px;
-  margin-top: 20px;
-  border: 1px solid #dbdbdb;
-  border-radius: 8px;
-  resize: none;
 }
 
 .preview {
-  width: 300px;
-  height: 250px;
-  background-size: cover;
-  background-position: center;
+  width: 100%;
+  padding-top: 100%;
   background-repeat: no-repeat;
-  border: 1px solid #dbdbdb;
-  border-radius: 8px;
+  background-position: center;
+  background-size: cover;
+  border-radius: 10px;
 }
 </style>

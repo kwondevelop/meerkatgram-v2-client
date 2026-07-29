@@ -2,9 +2,7 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 
 export const useMyErrorStore = defineStore('myErrorStore', () => {
-
   // 1. State (ref)
-
   const isError = ref(false);
   const errorCode = ref('');
   const errorMsg = ref('');
@@ -12,9 +10,8 @@ export const useMyErrorStore = defineStore('myErrorStore', () => {
   // 2. Getters (computed)
 
   // 3. Actions (function)
-
   const setErrorInfo = (error) => {
-    const errorData = error.response?.data || { code: 'UNKNOWN_ERROR', message: '예기치 못한 에러가 발생했습니다' };
+    const errorData = error.response?.data || {code: 'UNKNOWN_ERROR', message: '예기치 못한 에러가 발생했습니다.'};
     errorCode.value = errorData.code;
     errorMsg.value = errorData.message;
     isError.value = true;
@@ -31,6 +28,6 @@ export const useMyErrorStore = defineStore('myErrorStore', () => {
     errorCode,
     errorMsg,
     setErrorInfo,
-    clearErrorInfo
+    clearErrorInfo,
   }
 });

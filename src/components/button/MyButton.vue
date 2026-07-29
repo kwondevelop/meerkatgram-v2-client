@@ -4,18 +4,18 @@ const props = defineProps({
     type: String,
     default: 'button'
   }, // 'button', 'submit', 'reset'
-  'size': String, // 'big', 'medium', 'small'
+  'size': String, // 'big', 'middle', 'small'
   'color': String, // 'black', 'white', 'gray'
   'content': String,
 });
+
 </script>
 
 <template>
-  <button 
-  :type="props.btnType"
-  :class="[props.color, props.size]">
-  {{ props.content }}
-  </button>
+  <button
+    :type="props.btnType"
+    :class="[props.color, props.size]"
+  >{{ props.content }}</button>
 </template>
 
 <style scoped>
@@ -51,13 +51,13 @@ button {
   color: var(--personal-color-white);
 }
 
-.white {
-  background-color: var(--personal-color-white);
-  color: var(--personal-color-black);
-}
-
 .gray {
   background-color: var(--personal-color-gray);
   color: var(--personal-color-white);
+}
+
+.white {
+  background-color: var(--personal-color-white);
+  color: var(--personal-color-black);
 }
 </style>

@@ -1,6 +1,5 @@
 <script setup>
 const props = defineProps({
-  'type': String,
   'placeholder': String,
   'readonly': Boolean,
   'required': Boolean,
@@ -8,28 +7,25 @@ const props = defineProps({
 
 // 부모의 v-model과 연결되는 반응형 변수(v3.4+)
 const model = defineModel();
+
 </script>
 
 <template>
-<input
-  :type="props.type"
+<textarea
   :readonly="props.readonly"
   :required="props.required"
   :placeholder="props.placeholder"
   v-model="model"
->
+></textarea>
 </template>
 
+
 <style scoped>
-input {
-  padding: 0 10px;
-  width: 300px;
-  height: 85px;
-  font-size: 24px;
-  outline: none;
-  border: 2px solid var(--personal-color-black);
+textarea {
+  width: 100%;
+  height: 200px;
+  padding: 10px;
   border-radius: 10px;
-  display: flex;
-  align-items: center;
+  resize: none;
 }
 </style>

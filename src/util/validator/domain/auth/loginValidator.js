@@ -1,4 +1,4 @@
-import { email, password } from '../../rule/userRules';
+import { email, password } from "../../rule/userRule";
 
 export default {
   email,

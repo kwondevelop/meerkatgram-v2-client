@@ -1,19 +1,16 @@
 <script setup>
-import { reactive } from "vue";
-import MyButton from "../../components/button/MyButton.vue";
-import MyInput from "../../components/input/MyInput.vue";
-import MyStrikeThroughBehindWord from "../../components/decoration/MyStrikeThroughBehindWord.vue";
-import { useAuthStore } from "../../store/auth/useAuthStore.js";
-import { useRouter } from "vue-router";
-import loginValidator from "../../util/validator/domain/auth/loginValidator.js";
-import { ref } from "vue";
-import useFileStore from "../../store/file/useFileStore.js";
-import registrationValidator from "../../store/auth/registrationValidator.js";
-import { useMyErrorStore } from "../../store/error/useMyErrorStore.js";
+import { reactive, ref } from 'vue';
+import MyButton from '../../components/button/MyButton.vue';
+import MyInput from '../../components/input/MyInput.vue';
+import { useFileStore } from '../../store/file/useFileStore.js';
+import { useAuthStore } from '../../store/auth/useAuthStore.js';
+import { useRouter } from 'vue-router';
+import registrationValidator from '../../util/validator/domain/auth/registrationValidator.js';
+import { useMyErrorStore } from '../../store/error/useMyErrorStore.js';
 
-const authStore = useAuthStore();
 const router = useRouter();
 const fileStore = useFileStore();
+const authStore = useAuthStore();
 const myErrorStore = useMyErrorStore();
 
 const preview = ref(null);
@@ -21,7 +18,7 @@ const selectedFile = ref(null);
 const registrationData = reactive({
   email: '',
   password: '',
-  passwordCheck: '',
+  confirmPassword: '',
   nick: '',
   profile: '',
 });
@@ -31,7 +28,7 @@ const handleSubmit = async () => {
   const validationList = [
     registrationValidator.email(registrationData.email),
     registrationValidator.password(registrationData.password),
-    registrationValidator.passwordCheck(registrationData.password, registrationData.passwordCheck),
+    registrationValidator.confirmPassword(registrationData.password, registrationData.confirmPassword),
     registrationValidator.nick(registrationData.nick),
     registrationValidator.profile(registrationData.profile),
   ];
@@ -45,14 +42,14 @@ const handleSubmit = async () => {
 
   try {
     await authStore.registration(registrationData);
-    alert('회원가입 성공');
+    alert("회원가입에 성공했습니다.");
     router.replace('/login');
-  } catch(error) {
+  } catch (error) {
     const data = error.response.data;
     if(data.code === 'E11') {
       alert(data.data);
     } else if(data.code === 'E21') {
-      alert('잘못된 양식');
+      alert('잘못된 양식입니다.');
     } else {
       myErrorStore.setErrorInfo(error);
       router.replace('/error');
@@ -60,13 +57,13 @@ const handleSubmit = async () => {
   }
 }
 
-const handleChangeProfile = async (event) => {
-  const file = event.target.files[0];
+const handleChangeProfile = async (e) => {
+  const file = e.target.files[0];
 
   if(file) {
     if(preview.value) {
       // 기존에 생성된 메모리 URL이 있다면 해제 (메모리 누수 방지)
-      URL.revokeObjectURL(preview);
+      URL.revokeObjectURL(preview.value);
     }
 
     // API 서버에 파일 저장 요청
@@ -74,73 +71,66 @@ const handleChangeProfile = async (event) => {
 
     if(fileUri) {
       registrationData.profile = fileUri;
+
       selectedFile.value = file;
   
-      // 파일 객체를 브라우저에서 접근 가능한 임시 URL로 변환
+      // 파일 객체를 브라우저에서 접근 가능한 임시URL로 변환
       preview.value = URL.createObjectURL(file);
-    } else {
-      alert('파일 업로드 실패\n다시 시도');
     }
-
   }
 }
-
 </script>
 
 <template>
-  <form @submit.prevent="handleSubmit">
-    <MyInput
-      :type="'email'"
-      :placeholder="'이메일'"
-      :readonly="false"
-      :required="true"
-      v-model="registrationData.email"
-    />
+<form @submit.prevent="handleSubmit">
+  <MyInput
+    :type="'email'"
+    :placeholder="'Email'"
+    :readonly="false"
+    :required="true"
+    v-model="registrationData.email"
+  ></MyInput>
+  <MyInput
+    :type="'password'"
+    :placeholder="'Password'"
+    :readonly="false"
+    :required="true"
+    v-model="registrationData.password"
+  ></MyInput>
+  <MyInput
+    :type="'password'"
+    :placeholder="'confirmPassword'"
+    :readonly="false"
+    :required="true"
+    v-model="registrationData.confirmPassword"
+  ></MyInput>
+  <MyInput
+    :type="'text'"
+    :placeholder="'Nick'"
+    :readonly="false"
+    :required="true"
+    v-model="registrationData.nick"
+  ></MyInput>
 
-    <MyInput
-      :type="'password'"
-      :placeholder="'비밀번호'"
-      :readonly="false"
-      :required="true"
-      v-model="registrationData.password"
-    />
+  <div
+    class="preview"
+    v-if="preview"
+    :style="{backgroundImage: `url(${preview})`}"
+  ></div>
 
-    <MyInput
-      :type="'password'"
-      :placeholder="'비밀번호 확인'"
-      :readonly="false"
-      :required="true"
-      v-model="registrationData.passwordCheck"
-    />
+  <input
+    type="file"
+    accept="image/*"
+    @change="handleChangeProfile"
+  >
 
-    <MyInput
-      :type="'text'"
-      :placeholder="'이름'"
-      :readonly="false"
-      :required="true"
-      v-model="registrationData.nick"
-    />
-    
-    <div
-      class="preview"
-      v-if="preview"
-      :style="{ backgroundImage: `url(${preview})` }"
-    ></div>
-
-    <input
-      id="file"
-      type="file"
-      accept="image/*"
-      @change="handleChangeProfile"
-    />
-
-    <MyButton
-      :btn-type="'submit'"
-      :color="'gray'"
-      :size="'middle'"
-      :content="'가입하기'"
-    />
-  </form>
+  <MyButton
+    :btn-type="'submit'"
+    :color="'black'"
+    :size="'middle'"
+    :content="'Sign Up'"
+  ></MyButton>
+</form>
 </template>
 
 <style scoped>
