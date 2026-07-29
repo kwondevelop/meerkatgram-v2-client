@@ -9,12 +9,9 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        // Request 대상 서버 도메인
-        target: 'http://localhost:8080',
-        // Request Header Host 필드 값을 대상 서버 호스트로 변경
-        changeOrigin: true,
-        // SSL 인증서 검증 무시
-        secure: false,
+        target: 'http://localhost:8080', // Request 대상 서버 도메인
+        changeOrigin: true, // Request Header Host 필드 값을 대상 서버 호스트로 변경
+        secure: false, // SSL 인증서 검증 무시
       }
     }
   }

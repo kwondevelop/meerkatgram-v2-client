@@ -22,6 +22,11 @@ const storeData = reactive({
 
 const handleSubmit = async () => {
   try {
+    storeData.image = await fileStore.uploadPost(selectedFile.value);
+    if(!storeData.image) {
+      alert("파일 업로드 실패");
+      return;
+    }
     const result = await postCrestStore.store(storeData);
     router.replace(`/posts/${result.id}`);
   } catch (error) {
@@ -37,15 +42,8 @@ watch(selectedFile, async () => {
       URL.revokeObjectURL(preview.value);
     }
 
-    // API 서버에 파일 저장 요청
-    const fileUri = await fileStore.uploadPost(selectedFile.value);
-
-    if(fileUri) {
-      storeData.image = fileUri;
-
-      // 파일 객체를 브라우저에서 접근 가능한 임시URL로 변환
-      preview.value = URL.createObjectURL(selectedFile.value);
-    }
+    // 파일 객체를 브라우저에서 접근 가능한 임시URL로 변환
+    preview.value = URL.createObjectURL(selectedFile.value);
   }
 });
 </script>
