@@ -48,6 +48,11 @@ const routes = [
     component: PostCreate,
     meta: setMeta(true, false),
   },
+  {
+    path: '/oauth2/callback',
+    component: OAuth2Callback,
+    meta: setMeta(false, false),
+  },
   // 에러 관련
   {
     path: '/error',

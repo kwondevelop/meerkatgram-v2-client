@@ -23,6 +23,10 @@ export const useMyErrorStore = defineStore('myErrorStore', () => {
     isError.value = false;
   }
 
+  const createErrorWithCodeAndMessage = () => {
+    
+  }
+
   return {
     isError,
     errorCode,

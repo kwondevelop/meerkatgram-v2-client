@@ -2,11 +2,21 @@
 const props = defineProps({
   'btnType': {
     type: String,
-    default: 'button'
-  }, // 'button', 'submit', 'reset'
+    default: 'button' // 'button', 'submit', 'reset'
+  },
   'size': String, // 'big', 'middle', 'small'
-  'color': String, // 'black', 'white', 'gray'
-  'content': String,
+  'color': {
+    type: String,
+    default: '' // 'black', 'white', 'gray'
+  },
+  'content': {
+    type: String,
+    default: ''
+  },
+  'socialBtn': {
+    type: String,
+    default: '' // 'kakao', 'naver', 'google'
+  }
 });
 
 </script>
@@ -59,5 +69,9 @@ button {
 .white {
   background-color: var(--personal-color-white);
   color: var(--personal-color-black);
+}
+
+.kakao {
+  background-image: url('/icons/kakao_login_large_narrow.png');
 }
 </style>
