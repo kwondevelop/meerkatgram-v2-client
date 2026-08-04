@@ -30,7 +30,7 @@ export const usePostIndexStore = defineStore('postIndex', () => {
   
         const res = await myAxios.get(url, { params });
         const data = res.data.data;
-        isLastPage.value = data.lastPage;
+        isLastPage.value = data.isLastPage;
         items.value.push(...data.posts);
   
         currentPage.value++;

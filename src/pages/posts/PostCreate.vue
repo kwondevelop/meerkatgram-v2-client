@@ -7,11 +7,13 @@ import { useFileStore } from '../../store/file/useFileStore.js';
 import { useRouter } from 'vue-router';
 import { usePostCreateStore } from '../../store/post/usePostCreateStore.js';
 import { usePostShowStore } from '../../store/post/usePostShowStore.js';
+import { usePostStatisticsStore } from '../../store/post/usePostStatisticsStore.js';
 
 const router = useRouter();
 const fileStore = useFileStore();
 const postCrestStore = usePostCreateStore();
 const postShowStore = usePostShowStore();
+const postStatisticsStore = usePostStatisticsStore();
 
 const preview = ref(null);
 const selectedFile = ref(null);
@@ -28,6 +30,7 @@ const handleSubmit = async () => {
       return;
     }
     const result = await postCrestStore.store(storeData);
+    postStatisticsStore.incrementPostCount();
     router.replace(`/posts/${result.id}`);
   } catch (error) {
     alert('게시글 생성 실패');
@@ -70,9 +73,9 @@ watch(selectedFile, async () => {
 
   <MyButton
     :btn-type="'submit'"
-    :content="'Write'"
-    :color="'gray'"
-    :size="'middle'"
+    :btnContent="'Write'"
+    :btnStyle="'gray'"
+    :btnSize="'middle'"
   ></MyButton>
 </form>
 </template>

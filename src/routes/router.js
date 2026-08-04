@@ -7,6 +7,8 @@ import { usePostStatisticsStore } from "../store/post/usePostStatisticsStore.js"
 import PostShow from "../pages/posts/PostShow.vue";
 import Registration from "../pages/auth/Registration.vue";
 import PostCreate from "../pages/posts/PostCreate.vue";
+import OAuth2Callback from "../pages/auth/OAuth2Callback.vue";
+import NotFound from "../pages/errors/NotFound.vue";
 
 const setMeta = (isAuthenticated, isGuestOnly) => {
   return {
@@ -59,6 +61,12 @@ const routes = [
     component: MyError,
     meta: setMeta(false, false),
   },
+  // 모든 경로가 일치하지 않을 때 (가장 아래에 위치해야 함)
+  {
+    path: '/:pathMatch(.*)*',
+    component: NotFound,
+    meta: setMeta(false, false),
+  }
 ];
 
 const router = createRouter({

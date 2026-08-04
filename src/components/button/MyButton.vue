@@ -2,21 +2,20 @@
 const props = defineProps({
   'btnType': {
     type: String,
-    default: 'button' // 'button', 'submit', 'reset'
+    default: 'button'  // 'button', 'submit', 'reset'
   },
-  'size': String, // 'big', 'middle', 'small'
-  'color': {
+  'btnSize': {
     type: String,
-    default: '' // 'black', 'white', 'gray'
+    default: 'big'  // 'big', 'middle', 'small'
+  },  
+  'btnStyle': {
+    type: String,
+    default: ''  // 'black', 'white', 'gray', 'kakao', 'google', 'naver'
   },
-  'content': {
+  'btnContent': {
     type: String,
     default: ''
   },
-  'socialBtn': {
-    type: String,
-    default: '' // 'kakao', 'naver', 'google'
-  }
 });
 
 </script>
@@ -24,8 +23,8 @@ const props = defineProps({
 <template>
   <button
     :type="props.btnType"
-    :class="[props.color, props.size]"
-  >{{ props.content }}</button>
+    :class="[props.btnStyle, props.btnSize]"
+  >{{ props.btnContent }}</button>
 </template>
 
 <style scoped>
@@ -36,6 +35,9 @@ button {
   align-items: center;
   border: none;
   cursor: pointer;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 }
 
 .big {

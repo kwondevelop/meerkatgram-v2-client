@@ -9,6 +9,9 @@ export const usePostStatisticsStore = defineStore('postStatisticsStore', () => {
   // 2. Getters
 
   // 3. Actions
+  const incrementPostCount = () => {
+    postCount.value++;
+  }
   const decrementPostCount = () => {
     postCount.value--;
   }
@@ -32,6 +35,7 @@ export const usePostStatisticsStore = defineStore('postStatisticsStore', () => {
     // Getters
 
     // Actions
+    incrementPostCount,
     decrementPostCount,
     getUserPostCount,
   }
